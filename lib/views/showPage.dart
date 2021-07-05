@@ -1,25 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-import '../provider/provider.dart';
 
-class AddPage extends StatefulWidget {
+class ShowPage extends StatefulWidget {
+  //const ShowPage();
+
   @override
-  _AddPageState createState() => _AddPageState();
+  _ShowPageState createState() => _ShowPageState();
 }
 
-class _AddPageState extends State<AddPage> {
+class _ShowPageState extends State<ShowPage> {
   final _titleController = TextEditingController();
   final _noteController = TextEditingController();
-
-  void _saveNote() {
-    if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
-      return;
-    }
-    Provider.of<TakeNote>(context, listen: false)
-        .addNote(_titleController.text, _noteController.text);
-    Navigator.of(context).pop();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +25,9 @@ class _AddPageState extends State<AddPage> {
             ),
             Container(
               child: TextField(
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(
+                  hintText: 'hi',
+                ),
                 controller: _titleController,
               ),
             ),
@@ -53,7 +45,11 @@ class _AddPageState extends State<AddPage> {
             SizedBox(
               height: 10,
             ),
-            RaisedButton(child: Text('Add note'), onPressed: _saveNote)
+            RaisedButton(
+                child: Text('Update Note'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                })
           ],
         ),
       ),

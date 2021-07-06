@@ -13,4 +13,12 @@ class Note {
     @required this.title,
     @required this.text,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'text': text,
+    };
+  }
 }

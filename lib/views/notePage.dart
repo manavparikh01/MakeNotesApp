@@ -45,23 +45,66 @@ class _NotePageState extends State<NotePage> {
                     ? ch
                     : ListView.builder(
                         itemCount: takeNote.items.length,
-                        itemBuilder: (ctx, i) => Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black54),
-                          ),
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 7),
-                          child: ListTile(
-                            title: Text(takeNote.items[i].title),
-                            subtitle: Text(takeNote.items[i].text),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ShowPage()));
+                        itemBuilder: (ctx, i) {
+                          final item = takeNote.items[i].id;
+                          final itemTitle = takeNote.items[i].title;
+                          return Dismissible(
+                            key: Key(item),
+                            onDismissed: (direction) {
+                              Provider.of<TakeNote>(context, listen: false)
+                                  .deleteNote(item);
+                              print('snak');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('$itemTitle deleted')));
+                              print('bar');
                             },
-                          ),
-                        ),
+                            background: Container(
+                              width: MediaQuery.of(context).size.width - 10,
+                              color: Colors.blue,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  // Icon(
+                                  //   Icons.delete,
+                                  //   color: Colors.white,
+                                  //   size: 30,
+                                  // ),
+                                  // SizedBox(
+                                  //   width: 20,
+                                  // ),
+                                  Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black54),
+                              ),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 7),
+                              child: ListTile(
+                                title: Text(takeNote.items[i].title),
+                                subtitle: takeNote.items[i].text.length >= 20
+                                    ? Text(
+                                        '${takeNote.items[i].text.substring(0, 20)}...')
+                                    : Text('${takeNote.items[i].text}'),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ShowPage(
+                                              id: takeNote.items[i].id)));
+                                },
+                              ),
+                            ),
+                          );
+                        },
                       ),
               ),
       ),

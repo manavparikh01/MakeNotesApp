@@ -13,6 +13,10 @@ class TakeNote with ChangeNotifier {
     return [..._items];
   }
 
+  Note findById(String id) {
+    return _items.firstWhere((note) => note.id == id);
+  }
+
   void addNote(String title, String note) {
     final newNote = Note(
       id: DateTime.now().toString(),
@@ -27,6 +31,47 @@ class TakeNote with ChangeNotifier {
       'title': newNote.title,
       'text': newNote.text,
     });
+  }
+
+  showNote(String id) {
+    var existingNoteIndex = _items.indexWhere((prod) => prod.id == id);
+    var existingNote = _items[existingNoteIndex];
+    if (existingNoteIndex != null && existingNote != null) {
+      return Note(
+        id: existingNote.id,
+        title: existingNote.title,
+        text: existingNote.text,
+      );
+    }
+  }
+
+  void updateNote(String id, String title, String text) {
+    var existingNoteIndex = _items.indexWhere((prod) => prod.id == id);
+    var existingNote = _items[existingNoteIndex];
+    final updatedNote = Note(id: id, title: title, text: text);
+    if (existingNoteIndex != null) {
+      _items[existingNoteIndex] = updatedNote;
+      SqlStore.update(
+        'user_notes',
+        updatedNote,
+      );
+      notifyListeners();
+      print('coo');
+    }
+    print('coooo');
+  }
+
+  void deleteNote(String id) {
+    var existingNoteIndex = _items.indexWhere((prod) => prod.id == id);
+    var existingNote = _items[existingNoteIndex];
+    if (existingNoteIndex != null && existingNote != null) {
+      _items.removeWhere((prod) => prod.id == id);
+      SqlStore.delete(
+        'user_notes',
+        id = existingNote.id,
+      );
+      notifyListeners();
+    }
   }
 
   Future<void> fetchData() async {

@@ -1,3 +1,4 @@
+import 'package:makemynotes/model/note.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 
@@ -17,6 +18,25 @@ class SqlStore {
       table,
       data,
       conflictAlgorithm: sql.ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<void> update(String table, Note note) async {
+    final db = await SqlStore.database();
+    await db.update(
+      table,
+      note.toMap(),
+      where: 'id = ?',
+      whereArgs: [note.id],
+    );
+  }
+
+  static Future<void> delete(String table, String id) async {
+    final db = await SqlStore.database();
+    await db.delete(
+      table,
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
 

@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:makemynotes/provider/provider.dart';
+import 'package:makemynotes/views/addPage.dart';
+import 'package:makemynotes/views/showPageOne.dart';
 import 'views/notePage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +33,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: NotePage(),
+        // initialRoute: NotePage.routeName,
+        // routes: {
+        //   ShowPage.routeName: (context) => ShowPage(),
+        //   AddPage.routeName: (context) => AddPage(),
+        // },
       ),
     );
   }

@@ -1,30 +1,43 @@
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-import '../provider/provider.dart';
+//import 'dart:html';
 
-class AddPage extends StatefulWidget {
-  static const routeName = '/addNote';
+import 'package:flutter/material.dart';
+import 'package:makemynotes/provider/provider.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
+
+class ShowPage extends StatefulWidget {
+  static const routeName = '/showPage';
+  final String id;
+  ShowPage({this.id});
 
   @override
-  _AddPageState createState() => _AddPageState();
+  _ShowPageState createState() => _ShowPageState();
 }
 
-class _AddPageState extends State<AddPage> {
-  final _titleController = TextEditingController();
-  final _noteController = TextEditingController();
+class _ShowPageState extends State<ShowPage> {
+  var _titleController = TextEditingController();
 
-  void _saveNote() {
-    if (_noteController.text.isEmpty) {
-      return;
+  var _noteController = TextEditingController();
+
+  Future<void> _updateNote(BuildContext context) async {
+    if (widget.id != null) {
+      await Provider.of<TakeNote>(context, listen: false)
+          .updateNote(widget.id, _titleController.text, _noteController.text);
     }
-    Provider.of<TakeNote>(context, listen: false)
-        .addNote(_titleController.text, _noteController.text);
-    Navigator.of(context).pop();
+    print('co');
+
+    //Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    //final id = ModalRoute.of(context).settings.arguments as String;
+    final selectedNote =
+        Provider.of<TakeNote>(context, listen: false).findById(widget.id);
+    // final intialTitle = selectedNote.title;
+    // final initialText = selectedNote.text;
+    _titleController.text = selectedNote.title;
+    _noteController.text = selectedNote.text;
     final appBar = AppBar(
       title: Text('New Note'),
       actions: [
@@ -33,7 +46,9 @@ class _AddPageState extends State<AddPage> {
           child: Center(
             child: GestureDetector(
               child: Text('Save'),
-              onTap: () {},
+              onTap: () {
+                _updateNote(context);
+              },
             ),
           ),
         ),
@@ -62,12 +77,12 @@ class _AddPageState extends State<AddPage> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         Container(
                           child: TextField(
                             decoration: InputDecoration(
-                              hintText: 'Title',
+                              //hintText: 'Title',
                               contentPadding:
                                   EdgeInsets.only(top: 2, bottom: 1),
                               // border: OutlineInputBorder(
@@ -81,6 +96,9 @@ class _AddPageState extends State<AddPage> {
                               ),
                             ),
                             controller: _titleController,
+                            onChanged: (value) {
+                              _titleController.text = value;
+                            },
                           ),
                         ),
                         SizedBox(
@@ -95,10 +113,13 @@ class _AddPageState extends State<AddPage> {
                             minLines: 1,
                             maxLines: 300,
                             decoration: InputDecoration(
-                              hintText: 'Enter Note',
+                              //hintText: 'Enter Note',
                               border: InputBorder.none,
                             ),
                             controller: _noteController,
+                            onChanged: (value) {
+                              _noteController.text = value;
+                            },
                           ),
                         ),
                         SizedBox(
@@ -110,15 +131,12 @@ class _AddPageState extends State<AddPage> {
                 ),
               ),
               RaisedButton(
-                child: Text(
-                  'Add note',
-                ),
-                color: _noteController.text.isNotEmpty
-                    ? Colors.green
-                    : Colors.grey,
-                onPressed: _saveNote,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              )
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child: Text('Update Note'),
+                  onPressed: () {
+                    _updateNote(context);
+                    //Navigator.of(context).pop();
+                  })
             ],
           ),
         ),

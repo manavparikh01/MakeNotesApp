@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:makemynotes/provider/provider.dart';
 import 'package:makemynotes/views/addPage.dart';
+import 'package:makemynotes/views/notePageRises.dart';
 import 'package:makemynotes/views/showPageOne.dart';
 import 'views/notePage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: NotePage(),
+        home: NotePageRises(),
         // initialRoute: NotePage.routeName,
         // routes: {
         //   ShowPage.routeName: (context) => ShowPage(),

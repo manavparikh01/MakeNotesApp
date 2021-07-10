@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:makemynotes/provider/provider.dart';
+import 'package:makemynotes/provider/taskProvider.dart';
 import 'package:makemynotes/views/addPage.dart';
+import 'package:makemynotes/views/bottomBar.dart';
 import 'package:makemynotes/views/notePageRises.dart';
 import 'package:makemynotes/views/showPageOne.dart';
 import 'views/notePage.dart';
@@ -16,8 +18,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: TakeNote(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => TakeNote(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ToTask(),
+        ),
+      ],
+
       //value: TakeNote(),
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -33,7 +43,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: NotePageRises(),
+        home: BottomBar(),
         // initialRoute: NotePage.routeName,
         // routes: {
         //   ShowPage.routeName: (context) => ShowPage(),

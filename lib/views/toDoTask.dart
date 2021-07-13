@@ -31,10 +31,25 @@ class _ToDoTaskState extends State<ToDoTask> {
       complete = 1;
     });
     Future.delayed(Duration(seconds: 2), () {
-      Provider.of<ToTask>(context, listen: false).completeTask(id);
+      //Provider.of<ToTask>(context, listen: false).completeTask(id);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Task completed'),
+        ),
+      );
+    });
+  }
+
+  uncompleted(String id) {
+    setState(() {
+      val = id;
+      complete = 0;
+    });
+    Future.delayed(Duration(seconds: 2), () {
+      //Provider.of<ToTask>(context, listen: false).completeTask(id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Task added again'),
         ),
       );
     });
@@ -78,38 +93,124 @@ class _ToDoTaskState extends State<ToDoTask> {
       appBar: AppBar(
         title: Text('Tasks'),
       ),
-      body: Consumer<ToTask>(
-        child: Center(
-          child: Text('No tasks added yet'),
-        ),
-        builder: (ctx, toTask, ch) => toTask.items.length <= 0
-            ? ch
-            : ListView.builder(
-                itemCount: toTask.items.length,
-                itemBuilder: (ctx, i) {
-                  final item = toTask.items[i].id;
-                  final itemTitle = toTask.items[i].title;
-                  return Container(
-                    child: ListTile(
-                      leading: Radio(
-                        groupValue: toTask,
-                        onChanged: (value) {
-                          completed(value);
-                        },
-                        value: item,
-                      ),
-                      title: item == val && complete == 1
-                          ? Text(
-                              'itemTitle',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  decoration: TextDecoration.lineThrough),
-                            )
-                          : Text(itemTitle),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - 100,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: <Widget>[
+              SingleChildScrollView(
+                child: Container(
+                  color: Color.fromRGBO(34, 56, 29, 0.2),
+                  constraints: BoxConstraints(minHeight: 200, maxHeight: 450),
+                  child: Consumer<ToTask>(
+                    child: Center(
+                      child: Text('No tasks added yet'),
                     ),
-                  );
-                },
+                    builder: (ctx, toTask, ch) => toTask.items.length <= 0
+                        ? ch
+                        : ListView.builder(
+                            itemCount: toTask.items.length,
+                            itemBuilder: (ctx, i) {
+                              final item = toTask.items[i].id;
+                              final itemTitle = toTask.items[i].title;
+                              var time = toTask.items[i].time;
+                              var datetime = DateTime.parse(time);
+                              var date = "${datetime.day}-${datetime.month}";
+                              return item == val && complete == 1
+                                  ? null
+                                  : Container(
+                                      child: ListTile(
+                                        leading: Radio(
+                                          activeColor: Colors.grey,
+                                          autofocus: true,
+                                          focusColor: Colors.grey,
+                                          fillColor: MaterialStateProperty.all(
+                                              Colors.grey),
+                                          groupValue: null,
+                                          onChanged: (value) {
+                                            toTask.items[i].isCompletedToggle();
+                                            completed(value);
+                                          },
+                                          value: item,
+                                        ),
+                                        title: item == val && complete == 1
+                                            ? null
+                                            // ? Text(
+                                            //     itemTitle,
+                                            //     style: TextStyle(
+                                            //         color: Colors.grey,
+                                            //         decoration:
+                                            //             TextDecoration.lineThrough),
+                                            // )
+                                            : Text(itemTitle),
+                                        subtitle: Text(
+                                          date,
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                      ),
+                                    );
+                            },
+                          ),
+                  ),
+                ),
               ),
+              SingleChildScrollView(
+                child: Container(
+                  height: 200,
+                  color: Color.fromRGBO(45, 23, 54, 0.3),
+                  constraints: BoxConstraints(),
+                  child: Consumer<ToTask>(
+                    child: Center(
+                      child: Text('No Tasks Completed Today'),
+                    ),
+                    builder: (ctx, toTask, ch) => toTask.completed.length <= 0
+                        ? ch
+                        : ListView.builder(
+                            itemCount: toTask.completed.length,
+                            itemBuilder: (ctx, i) {
+                              final item = toTask.completed[i].id;
+                              final itemTitle = toTask.completed[i].title;
+                              var time = toTask.completed[i].time;
+                              var datetime = DateTime.parse(time);
+                              var date = "${datetime.day}-${datetime.month}";
+                              return Container(
+                                child: ListTile(
+                                  leading: Radio(
+                                    activeColor: Colors.grey,
+                                    autofocus: true,
+                                    focusColor: Colors.grey,
+                                    fillColor:
+                                        MaterialStateProperty.all(Colors.grey),
+                                    groupValue: null,
+                                    onChanged: (value) {
+                                      toTask.items[i].isCompletedToggle();
+                                      uncompleted(value);
+                                    },
+                                    value: item,
+                                  ),
+                                  title: item == val && complete == 1
+                                      ? Text(
+                                          itemTitle,
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              decoration:
+                                                  TextDecoration.lineThrough),
+                                        )
+                                      : null,
+                                  subtitle: Text(
+                                    date,
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                ),
+                              );
+                            }),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         elevation: 0,

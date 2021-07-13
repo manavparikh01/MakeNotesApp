@@ -12,6 +12,10 @@ class ToTask with ChangeNotifier {
     return _items;
   }
 
+  List<Task> get completed {
+    return _items.where((task) => task.isCompleted).toList();
+  }
+
   Task findById(String id) {
     return _items.firstWhere((task) => task.id == id);
   }

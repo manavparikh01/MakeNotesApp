@@ -8,7 +8,8 @@ class SqlStore {
     return await sql.openDatabase(path.join(sqlPath, 'notes.db'),
         onCreate: (db, verion) {
       return db.execute(
-          'CREATE TABLE user_notes(id TEXT PRIMARY KEY, title TEXT, text TEXT)');
+          'CREATE TABLE user_notes(id TEXT PRIMARY KEY, title TEXT, text TEXT)'
+          'CREATE TABLE user_tasks(id TEXT PRIMARY KEY, title TEXT, time TEXT, isFavorite TEXT)');
     }, version: 1);
   }
 

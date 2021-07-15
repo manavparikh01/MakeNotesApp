@@ -1,14 +1,15 @@
 import 'package:makemynotes/model/note.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
+import '../model/task.dart';
 
 class SqlStore {
   static Future<sql.Database> database() async {
     final sqlPath = await sql.getDatabasesPath();
-    return await sql.openDatabase(path.join(sqlPath, 'notes.db'),
+    return await sql.openDatabase(path.join(sqlPath, 'tasks.db'),
         onCreate: (db, verion) {
       return db.execute(
-          'CREATE TABLE user_notes(id TEXT PRIMARY KEY, title TEXT, text TEXT);');
+          'CREATE TABLE user_tasks(id TEXT PRIMARY KEY, title TEXT, time TEXT, isCompleted TEXT);');
     }, version: 1);
   }
 
@@ -21,13 +22,13 @@ class SqlStore {
     );
   }
 
-  static Future<void> update(String table, Note note) async {
+  static Future<void> update(String table, Task task) async {
     final db = await SqlStore.database();
     await db.update(
       table,
-      note.toMap(),
+      task.toMap(),
       where: 'id = ?',
-      whereArgs: [note.id],
+      whereArgs: [task.id],
     );
   }
 

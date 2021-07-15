@@ -158,8 +158,13 @@ class _NotePageRisesState extends State<NotePageRises> {
                       ),
                     )
                   : Consumer<TakeNote>(
-                      child: Center(
-                        child: Text('No notes yet'),
+                      child: SliverToBoxAdapter(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height - 230,
+                          child: Center(
+                            child: Text('No notes yet'),
+                          ),
+                        ),
                       ),
                       builder: (ctx, takeNote, ch) => takeNote.items.length <= 0
                           ? ch

@@ -6,17 +6,21 @@ class Task with ChangeNotifier {
   final String id;
   final String title;
   final String time;
-  bool isCompleted;
+  String isCompleted;
 
   Task({
     @required this.id,
     @required this.title,
     @required this.time,
-    this.isCompleted = false,
+    this.isCompleted = 'false',
   });
 
   void isCompletedToggle() {
-    isCompleted = !isCompleted;
+    if (isCompleted == 'false') {
+      isCompleted = 'true';
+    } else {
+      isCompleted = 'false';
+    }
     notifyListeners();
   }
 

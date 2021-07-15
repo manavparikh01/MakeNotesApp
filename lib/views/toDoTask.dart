@@ -31,7 +31,7 @@ class _ToDoTaskState extends State<ToDoTask> {
       complete = 1;
     });
     Future.delayed(Duration(seconds: 2), () {
-      //Provider.of<ToTask>(context, listen: false).completeTask(id);
+      Provider.of<ToTask>(context, listen: false).completeTask(id);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Task completed'),
@@ -46,7 +46,7 @@ class _ToDoTaskState extends State<ToDoTask> {
       complete = 0;
     });
     Future.delayed(Duration(seconds: 2), () {
-      //Provider.of<ToTask>(context, listen: false).completeTask(id);
+      Provider.of<ToTask>(context, listen: false).uncompleteTask(id);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Task added again'),
@@ -102,58 +102,117 @@ class _ToDoTaskState extends State<ToDoTask> {
               SingleChildScrollView(
                 child: Container(
                   color: Color.fromRGBO(34, 56, 29, 0.2),
-                  constraints: BoxConstraints(minHeight: 200, maxHeight: 450),
-                  child: Consumer<ToTask>(
-                    child: Center(
-                      child: Text('No tasks added yet'),
-                    ),
-                    builder: (ctx, toTask, ch) => toTask.items.length <= 0
-                        ? ch
-                        : ListView.builder(
-                            itemCount: toTask.items.length,
-                            itemBuilder: (ctx, i) {
-                              final item = toTask.items[i].id;
-                              final itemTitle = toTask.items[i].title;
-                              var time = toTask.items[i].time;
-                              var datetime = DateTime.parse(time);
-                              var date = "${datetime.day}-${datetime.month}";
-                              return item == val && complete == 1
-                                  ? null
-                                  : Container(
-                                      child: ListTile(
-                                        leading: Radio(
-                                          activeColor: Colors.grey,
-                                          autofocus: true,
-                                          focusColor: Colors.grey,
-                                          fillColor: MaterialStateProperty.all(
-                                              Colors.grey),
-                                          groupValue: null,
-                                          onChanged: (value) {
-                                            toTask.items[i].isCompletedToggle();
-                                            completed(value);
-                                          },
-                                          value: item,
+                  constraints: BoxConstraints(
+                    minHeight: 200,
+                    maxHeight: 450,
+                    maxWidth: MediaQuery.of(context).size.width,
+                    minWidth: 100,
+                  ),
+                  child: FutureBuilder(
+                    future:
+                        Provider.of<ToTask>(context, listen: false).fetchData(),
+                    builder: (ctx, snapshot) => snapshot.connectionState ==
+                            ConnectionState.waiting
+                        ? Container(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : Consumer<ToTask>(
+                            child: Center(
+                              child: Text('No tasks added yet'),
+                            ),
+                            builder: (ctx, toTask, ch) => toTask.items.length <=
+                                    0
+                                ? ch
+                                : ListView.builder(
+                                    itemCount: toTask.items.length,
+                                    itemBuilder: (ctx, i) {
+                                      final item = toTask.items[i].id;
+                                      final itemTitle = toTask.items[i].title;
+                                      var time = toTask.items[i].time;
+                                      var datetime = DateTime.parse(time);
+                                      var date =
+                                          "${datetime.day}-${datetime.month}";
+                                      return Container(
+                                        // width:
+                                        //     MediaQuery.of(context).size.width,
+                                        // width: 200,
+                                        // width:
+                                        //     MediaQuery.of(context).size.width -
+                                        //         10,
+                                        // constraints: BoxConstraints(
+                                        //     maxWidth: 300,
+                                        //     maxHeight: 30,
+                                        //     minWidth: 100,
+                                        //     minHeight: 30),
+                                        color: Color.fromRGBO(0, 255, 0, 0.3),
+                                        margin: EdgeInsets.only(
+                                            top: 5,
+                                            left: 10,
+                                            right: 10,
+                                            bottom: 0),
+                                        child:
+                                            // SingleChildScrollView(
+                                            //   child:
+                                            //   Row(
+                                            // mainAxisAlignment:
+                                            //     MainAxisAlignment.spaceBetween,
+                                            // children: <Widget>[
+                                            ListTile(
+                                          leading: Radio(
+                                            activeColor: Colors.grey,
+                                            autofocus: true,
+                                            focusColor: Colors.grey,
+                                            fillColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.grey),
+                                            groupValue: null,
+                                            onChanged: (value) {
+                                              Future.delayed(
+                                                  Duration(milliseconds: 500),
+                                                  () {
+                                                toTask.items[i]
+                                                    .isCompletedToggle();
+                                                completed(value);
+                                              });
+                                            },
+                                            value: item,
+                                          ),
+                                          title:
+                                              //    item == val &&
+                                              //         complete == 1
+                                              //     ? null
+                                              // ? Text(
+                                              //     itemTitle,
+                                              //     style: TextStyle(
+                                              //         color: Colors.grey,
+                                              //         decoration:
+                                              //             TextDecoration.lineThrough),
+                                              // )
+                                              //:
+                                              Text(itemTitle),
+                                          subtitle: Text(
+                                            date,
+                                            style: TextStyle(fontSize: 10),
+                                          ),
                                         ),
-                                        title: item == val && complete == 1
-                                            ? null
-                                            // ? Text(
-                                            //     itemTitle,
-                                            //     style: TextStyle(
-                                            //         color: Colors.grey,
-                                            //         decoration:
-                                            //             TextDecoration.lineThrough),
-                                            // )
-                                            : Text(itemTitle),
-                                        subtitle: Text(
-                                          date,
-                                          style: TextStyle(fontSize: 10),
-                                        ),
-                                      ),
-                                    );
-                            },
+                                        //   Container(
+                                        //     width: 20,
+                                        //     child: Icon(Icons.delete),
+                                        //   ),
+                                        // ],
+                                        // ),
+                                        //),
+                                      );
+                                    },
+                                  ),
                           ),
                   ),
                 ),
+              ),
+              Container(
+                child: Text('Completed Tasks'),
               ),
               SingleChildScrollView(
                 child: Container(
@@ -175,6 +234,9 @@ class _ToDoTaskState extends State<ToDoTask> {
                               var datetime = DateTime.parse(time);
                               var date = "${datetime.day}-${datetime.month}";
                               return Container(
+                                color: Color.fromRGBO(0, 0, 255, 0.3),
+                                margin: EdgeInsets.only(
+                                    top: 5, left: 10, right: 10, bottom: 0),
                                 child: ListTile(
                                   leading: Radio(
                                     activeColor: Colors.grey,
@@ -184,20 +246,23 @@ class _ToDoTaskState extends State<ToDoTask> {
                                         MaterialStateProperty.all(Colors.grey),
                                     groupValue: null,
                                     onChanged: (value) {
-                                      toTask.items[i].isCompletedToggle();
-                                      uncompleted(value);
+                                      Future.delayed(
+                                          Duration(milliseconds: 500), () {
+                                        toTask.items[i].isCompletedToggle();
+                                        uncompleted(value);
+                                      });
                                     },
                                     value: item,
                                   ),
-                                  title: item == val && complete == 1
-                                      ? Text(
-                                          itemTitle,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              decoration:
-                                                  TextDecoration.lineThrough),
-                                        )
-                                      : null,
+                                  title: //item == val && complete == 1
+                                      //?
+                                      Text(
+                                    itemTitle,
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        decoration: TextDecoration.lineThrough),
+                                  ),
+                                  //: null,
                                   subtitle: Text(
                                     date,
                                     style: TextStyle(fontSize: 10),

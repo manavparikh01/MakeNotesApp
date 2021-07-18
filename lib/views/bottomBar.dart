@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:makemynotes/views/datacollectionPage.dart';
 import 'package:makemynotes/views/notePage.dart';
 import 'package:makemynotes/views/notePageRises.dart';
 import 'package:makemynotes/views/toDoTask.dart';
@@ -13,7 +14,8 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   final List<Map<String, Object>> _pages = [
     {'screen': NotePageRises(), 'title': 'NotePage'},
-    {'screen': ToDoTask(), 'title': 'Tasks'}
+    {'screen': ToDoTask(), 'title': 'Tasks'},
+    {'screen': DataCollectionPage(), 'title': 'Overview'}
   ];
 
   int selected = 0;
@@ -42,6 +44,10 @@ class _BottomBarState extends State<BottomBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.tab),
+            title: Text('Tasks'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
             title: Text('Tasks'),
           ),
         ],

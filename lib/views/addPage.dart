@@ -27,17 +27,12 @@ class _AddPageState extends State<AddPage> {
   Widget build(BuildContext context) {
     final appBar = AppBar(
       title: Text('New Note'),
-      actions: [
-        Container(
-          width: 100,
-          child: Center(
-            child: GestureDetector(
-              child: Text('Save'),
-              onTap: () {},
-            ),
-          ),
-        ),
-      ],
+      // actions: [
+      //   Container(
+      //     width: 100,
+      //     child: Center(child),
+      //   ),
+      // ],
     );
     return Scaffold(
       appBar: appBar,
@@ -55,7 +50,7 @@ class _AddPageState extends State<AddPage> {
                   height: MediaQuery.of(context).size.height -
                       appBar.preferredSize.height -
                       MediaQuery.of(context).padding.top -
-                      40,
+                      80,
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: SingleChildScrollView(
@@ -107,6 +102,13 @@ class _AddPageState extends State<AddPage> {
                       ],
                     ),
                   ),
+                ),
+              ),
+              Container(
+                height: 40,
+                color: Color.fromRGBO(200, 34, 21, 0.4),
+                child: Center(
+                  child: Text('Colors'),
                 ),
               ),
               RaisedButton(

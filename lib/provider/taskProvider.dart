@@ -84,8 +84,12 @@ class ToTask with ChangeNotifier {
     var existingNote = _items[existingNoteIndex];
     if (existingNote != null && existingNoteIndex != null) {
       _items.removeWhere((prod) => prod.id == id);
+      SqlStore.delete(
+        'user_tasks',
+        id = existingNote.id,
+      );
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> fetchData() async {
